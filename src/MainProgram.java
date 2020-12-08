@@ -40,6 +40,6 @@ public class MainProgram extends JFrame
 		getContentPane().add(holder);
 		pack();
 		setVisible(true);
-		setSize(1100,1000);
+		setSize(1300,1100);
 	}
 }

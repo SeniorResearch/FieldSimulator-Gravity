@@ -13,7 +13,7 @@ public class FieldPanel extends JPanel
 	
 	int numCircles = 10000;
 	PointMass[] mass;
-	BackgroundElement[] bgElements;
+	BackgroundElement[][] bg;
 	
 	double startX;
 	double startY;
@@ -26,12 +26,16 @@ public class FieldPanel extends JPanel
 	
 	Launcher launch;
 	
+	Planet planet;
+	
+	boolean drawn = false;
+	
 	private final double G = 0.00000000006673;
 	
 	public FieldPanel()
 	{
 		//generateMovingFreefall(numCircles);
-		
+		//generateBackgroundGradient();
 		generatePlanet();
 		
 		addMouseListener(new MouseAdapter()
@@ -50,24 +54,26 @@ public class FieldPanel extends JPanel
 	
 	private void generateBackgroundGradient() 
 	{
-		bgElements = new BackgroundElement[160];
-		Random rand = new Random(System.currentTimeMillis());
-		
-		int numRows = 80;
-		int numCols = 80;
-				
-		/*
-		for(int i = 0; i < numCircles; i++)
-		{
-			float y = rand.nextFloat()*900;
-
+		bg = new BackgroundElement[300][250];
+		Color c;
+		float r = 1;
+		float g = 1;
+		float b = 1;
+		float a = 1;
 			
-			float xLoc = i*10;
-			Color color = new Color(1/2, 1/2 ,1/2, y/900);
-			bgElements[i] = new BackgroundElement(xLoc,y,10,color);
+		for(int i = 0; i < 300; i++)
+		{	
+			for(int j = 0; j < 250; j++)
+			{
+				float xLoc = i*4;
+				float yLoc = j*4;
+				r = yLoc/1000;
+				g = yLoc/1000;
+				b = yLoc/1000;
+				c = new Color(r,g,b,a);
+				bg[i][j] = new BackgroundElement(xLoc, yLoc, 4, c);
+			}
 		}
-			*/
-		
 	}
 
 	private void createLauncher(int x, int y)
@@ -162,6 +168,13 @@ public class FieldPanel extends JPanel
 	
 	private void generatePlanet()
 	{
+		PointMass body = new PointMass(0,0,0,0,0,0,0,0);
+		Color color = new Color(255, 196 ,0, 125);
+		planet = new Planet(500,500,10000,body);
+		planet.setRadius(75);
+		planet.setColor(color);
+		
+		
 		numCircles = 2;
 		mass = new PointMass[2];
 		
@@ -174,7 +187,7 @@ public class FieldPanel extends JPanel
 		int radius = 50;
 		int m = 1000;
 		mass[0] = new PointMass(x, y, xV, yV, xA, yA, radius, m);
-		Color color = new Color(255, 196 ,0, 125);
+		//Color color = new Color(255, 196 ,0, 125);
 		mass[0].setColor(color);
 		
 		x = 250;
@@ -274,13 +287,22 @@ public class FieldPanel extends JPanel
 				
 		for(int i = 0; i < numCircles; i++)
 		{
-			mass[i].draw(g2d);
+			//mass[i].draw(g2d);
 		}
 		
-		for(int i = 0; i < 160; i++)
+		for(int i = 0; i < 300; i++)
 		{
-			//bgElements[i].draw(g);
+			for(int j =0; j < 250; j++)
+			{
+				//bg[i][j].draw(g);
+			}
 		}
+		
+		planet.draw(g2d);
+		//for(int i = 0; i < 160; i++)
+		//{
+			//bgElements[i].draw(g);
+		//}
 		
 	}
 	
@@ -297,7 +319,7 @@ public class FieldPanel extends JPanel
 					 for(int i = 0; i < numCircles; i++)
 					 {
 						// mass[i].move(t);
-						 mass[1].move2(t);
+						// mass[1].move2(t);
 					 }
 	            	 repaint();
 	            	 try 

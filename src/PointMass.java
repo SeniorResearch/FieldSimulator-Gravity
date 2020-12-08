@@ -111,6 +111,10 @@ public class PointMass
 		
 		checkPosition(); 
 	}
+	public int getMass()
+	{
+		return mass;
+	}
 	
 	public void setColor(Color color)
 	{
