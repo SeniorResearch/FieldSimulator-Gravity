@@ -60,10 +60,10 @@ public class Planet
 	{
 		bg = new BackgroundElement[300][250];
 		Color c;
-		float r = 1;
-		float g = 1;
-		float b = 1;
-		float a = 1;
+		int r = 1;
+		int g = 1;
+		int b = 1;
+		int a = 1;
 		
 		for(int i = 0; i < 300; i++)
 		{	
@@ -71,10 +71,10 @@ public class Planet
 			{
 				float xLoc = i*10;
 				float yLoc = j*10;
-				r = 1/getDistance(xLoc, yLoc);
-				g = 1/getDistance(xLoc, yLoc);
-				b = 1/getDistance(xLoc, yLoc);
-				a = 1 - 1/getDistance(xLoc, yLoc);
+				r = (int) (255 - 255/getDistance(xLoc, yLoc));
+				g = (int) (255 - 255/getDistance(xLoc, yLoc));
+				b = (int) (255 - 255/getDistance(xLoc, yLoc));
+				a = 125;
 				c = new Color(r,g,b,a);
 				bg[i][j] = new BackgroundElement(xLoc, yLoc, 10, c);
 			}
@@ -87,7 +87,7 @@ public class Planet
 		float y = yCenter-yLoc;
 		
 		double distance = Math.sqrt((x*x)+(y*y)); 
-			
+
 		//System.out.println(distance);
 		return (float)distance;
 	}

@@ -1,24 +1,39 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 
 public class MainProgram extends JFrame
 {
-
+	JButton startButton;
+	JButton stopButton;
+	
+	JPanel field;
+	
+	JCheckBox nearEarthBox;
+	
 	public MainProgram()
 	{	
 		JLabel label = new JLabel("Menu");
 		label.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		JPanel buttonPanel = new JPanel();
-		JPanel field = new FieldPanel();
+		field = new FieldPanel();
 		JPanel holder = new JPanel();
 		holder.setLayout(new BoxLayout(holder, BoxLayout.X_AXIS));
 
 		
-		JButton startButton = new JButton("Start");
-		JButton stopButton = new JButton( "Stop ");
+		startButton = new JButton("Start");
+		stopButton = new JButton( "Stop ");
+		
 		startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		stopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		startButton.addActionListener(new ButtonListener());
+		stopButton.addActionListener(new ButtonListener());
+		
+		nearEarthBox = new JCheckBox("Near Earth");
 		
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 		buttonPanel.add(label);
@@ -26,6 +41,8 @@ public class MainProgram extends JFrame
 		buttonPanel.add(startButton);
 		buttonPanel.add(Box.createRigidArea(new Dimension(0,5)));
 		buttonPanel.add(stopButton);
+		buttonPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		buttonPanel.add(nearEarthBox);
 		buttonPanel.add(Box.createVerticalGlue());
 		
 		field.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -41,5 +58,24 @@ public class MainProgram extends JFrame
 		pack();
 		setVisible(true);
 		setSize(1300,1100);
+	}
+	
+	private class ButtonListener implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+	      {
+			if(e.getSource() == startButton)
+			{
+				System.out.println("Start button clicked");
+				if(nearEarthBox.isSelected())
+				{
+					field.generateNearEarth(100);
+				}
+			}
+			else if(e.getSource() == stopButton)
+			{
+				System.out.println("Stop button clicked");
+			}
+	      }
 	}
 }

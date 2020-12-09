@@ -34,8 +34,11 @@ public class Vector
 		this.yComponent = yComponent;
 		xEnd = xStart + xComponent;
 		yEnd = yStart + yComponent;
+		
+		//System.out.println("Vector at: X: " + xStart + " Y: " + yStart + " XC " + xComponent + " YC " + yComponent);
 		length = calculateLength(xComponent, yComponent);
 		vector = getVector();
+		
 		
 	}
 	
@@ -64,9 +67,9 @@ public class Vector
 		GeneralPath tip = new GeneralPath(GeneralPath.WIND_EVEN_ODD, 3);
 		
 		tip.moveTo(xEnd, yEnd);
-		tip.lineTo(xEnd-tipX, yEnd+tipY);
-		tip.moveTo(xEnd, yEnd);
 		tip.lineTo(xEnd-tipX, yEnd-tipY);
+		tip.moveTo(xEnd, yEnd);
+		tip.lineTo(xEnd+tipX, yEnd-tipY);
 		
 		return tip;
 	}
