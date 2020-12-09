@@ -34,8 +34,18 @@ public class FieldPanel extends JPanel
 	
 	VectorField fieldLines;
 	
+	boolean ready;
+	boolean linesOn;
+	
+	boolean planetOn;
+	boolean traceOn;
+	
 	public FieldPanel()
 	{
+		ready = false;
+		linesOn = false;
+		planetOn = false;
+		traceOn = false;
 		//generateMovingFreefall(numCircles);
 		//generateBackgroundGradient();
 		//generatePlanet();
@@ -48,7 +58,10 @@ public class FieldPanel extends JPanel
 			{
 				int a = e.getX();
 				int b = e.getY();
-				launchMassAt(a,b);
+				//launchMassAt(a,b);
+				launchMultipleMass(a,b);
+				ready = true;
+				runSim();
 			}
 
 		});
@@ -59,8 +72,17 @@ public class FieldPanel extends JPanel
 	{
 		numCircles = numObjects;
 		generateMovingFreefall(numCircles);
-		fieldLines = new VectorField(50,50,10);
+		fieldLines = new VectorField(47,47,10);
+		ready = true;
 		runSim();
+	}
+	public void setFieldLines(boolean linesOn)
+	{
+		this.linesOn = linesOn;		
+	}
+	public void setTraceOn(boolean traceOn)
+	{
+		this.traceOn = traceOn;
 	}
 	private void generateBackgroundGradient() 
 	{
@@ -86,7 +108,7 @@ public class FieldPanel extends JPanel
 				r = (int) (255-i);
 				g = (int) (255-i);
 				b = (int) (255-i);
-				a = (int) (125);
+				a = (int) (75);
 				c = new Color(r,g,b,a);
 				bg[i][j] = new BackgroundElement(xLoc, yLoc, 4, c);
 			}
@@ -96,6 +118,33 @@ public class FieldPanel extends JPanel
 	private void createLauncher(int x, int y)
 	{
 		launch = new Launcher(x,y);
+	}
+	
+	private void launchMultipleMass(float x, float y)
+	{
+		numCircles = 3;
+		mass = new PointMass[numCircles];
+		Random rand = new Random(System.currentTimeMillis());
+		
+		for(int i = 0; i < numCircles; i++)
+		{
+			float r = rand.nextFloat()*900;
+			float g = rand.nextFloat()*900;
+			float b = rand.nextFloat()*900;
+			
+			float xV = i+1;			
+			float yV = 0;
+
+			float xA = 0;				
+			float yA = 1;
+			
+			mass[i] = new PointMass(x,y,xV,yV,xA,yA,25,1);
+			
+			Color color = new Color(r/900, g/900 ,b/900, y/900);
+			
+			mass[i].setColor(color);
+			mass[i].setTraceOn(traceOn);
+		}
 	}
 		
 	private void launchMassAt(float x, float y)
@@ -144,6 +193,7 @@ public class FieldPanel extends JPanel
 				Color color = new Color(x/900, y/900 ,z/900, y/900);
 				
 				mass[i].setColor(color);
+				mass[i].setTraceOn(traceOn);
 			}
 				
 	}
@@ -155,7 +205,6 @@ public class FieldPanel extends JPanel
 		planet = new Planet(500,500,10000,body);
 		planet.setRadius(75);
 		planet.setColor(color);
-		
 		
 		numCircles = 2;
 		mass = new PointMass[2];
@@ -172,14 +221,17 @@ public class FieldPanel extends JPanel
 		//Color color = new Color(255, 196 ,0, 125);
 		mass[0].setColor(color);
 		
-		x = 250;
-		y = 250;
-		xV = 5;
+		x = 400;
+		y = 400;
+		xV = 1;
 		yV = 0;
 		xA = 0;
 		yA = 0;
 		
 		mass[1] = new PointMass(x, y, xV, yV, 1, 1, 10, 1);
+		
+		planetOn = true;
+		runSim();
 	}
 	
 	public void paintComponent(Graphics g)
@@ -196,20 +248,26 @@ public class FieldPanel extends JPanel
 			}
 		}
 		
-		for(int i = 0; i < numCircles; i++)
+		if(ready)
 		{
-			if(mass[i] != null)
+			for(int i = 0; i < numCircles; i++)
 			{
 				mass[i].draw(g2d);
 			}
+		}
+		if(linesOn)
+		{
+			fieldLines.draw(g2d);
 		}
 		
 		//fieldLines.draw(g2d);
 		g2d.setColor(Color.black);
 		g2d.drawLine(0, 925, 925, 925);
 		g2d.drawLine(925, 0, 925, 925);
+		
 		//launch.draw(g2d);
-		planet.draw(g2d);		
+		//planet.draw(g2d);
+		//mass[1].draw(g2d);
 	}
 	
 	 public void runSim() 
@@ -217,6 +275,7 @@ public class FieldPanel extends JPanel
 		 Thread simThread = new Thread() 
 	     {
 			 float t = 0;
+			 int frameCount = 0;
 			 public void run() 
 	         {
 				 while (true) 
@@ -224,12 +283,17 @@ public class FieldPanel extends JPanel
 					 t = (t+1)/4;
 					 for(int i = 0; i < numCircles; i++)
 					 {
-						if(mass[i] != null)
+						if(!planetOn)
 						{
 							mass[i].move(t);
 						}
-						// mass[1].move2(t);
+						if(planetOn)
+						{
+							mass[1].move2(t);
+						}
 					 }
+					 frameCount += 1;
+					 System.out.println(frameCount);
 	            	 repaint();
 	            	 try 
 	            	 {

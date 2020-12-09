@@ -9,14 +9,18 @@ public class MainProgram extends JFrame
 	JButton startButton;
 	JButton stopButton;
 	
-	JPanel field;
+	FieldPanel field;
 	
 	JCheckBox nearEarthBox;
+	JCheckBox linesOnBox;
+	JCheckBox tracePath;
+	JTextField numElements;
 	
 	public MainProgram()
 	{	
 		JLabel label = new JLabel("Menu");
 		label.setAlignmentX(Component.CENTER_ALIGNMENT);
+		JLabel options = new JLabel("Options");
 		
 		JPanel buttonPanel = new JPanel();
 		field = new FieldPanel();
@@ -25,7 +29,7 @@ public class MainProgram extends JFrame
 
 		
 		startButton = new JButton("Start");
-		stopButton = new JButton( "Stop ");
+		stopButton = new JButton( "Stop");
 		
 		startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		stopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -34,6 +38,10 @@ public class MainProgram extends JFrame
 		stopButton.addActionListener(new ButtonListener());
 		
 		nearEarthBox = new JCheckBox("Near Earth");
+		linesOnBox = new JCheckBox("Show Lines");
+		tracePath = new JCheckBox("Trace");
+		
+		numElements = new JTextField(5);
 		
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 		buttonPanel.add(label);
@@ -42,7 +50,15 @@ public class MainProgram extends JFrame
 		buttonPanel.add(Box.createRigidArea(new Dimension(0,5)));
 		buttonPanel.add(stopButton);
 		buttonPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		buttonPanel.add(options);
+		buttonPanel.add(Box.createRigidArea(new Dimension(0,5)));
 		buttonPanel.add(nearEarthBox);
+		buttonPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		buttonPanel.add(linesOnBox);
+		buttonPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		buttonPanel.add(tracePath);
+		buttonPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		//buttonPanel.add(numElements);
 		buttonPanel.add(Box.createVerticalGlue());
 		
 		field.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -66,14 +82,23 @@ public class MainProgram extends JFrame
 	      {
 			if(e.getSource() == startButton)
 			{
-				System.out.println("Start button clicked");
+				if(tracePath.isSelected())
+				{
+					field.setTraceOn(true);
+				}
 				if(nearEarthBox.isSelected())
 				{
-					field.generateNearEarth(100);
+					int n = Integer.parseInt(JOptionPane.showInputDialog("Number of Objects?"));
+					field.generateNearEarth(n);
+				}
+				if(linesOnBox.isSelected())
+				{
+					field.setFieldLines(true);
 				}
 			}
 			else if(e.getSource() == stopButton)
 			{
+				
 				System.out.println("Stop button clicked");
 			}
 	      }

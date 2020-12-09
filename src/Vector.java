@@ -61,8 +61,8 @@ public class Vector
 	
 	public GeneralPath getTip()
 	{
-		double tipX = 5;
-		double tipY = 5;
+		double tipX = 2;
+		double tipY = 2;
 		
 		GeneralPath tip = new GeneralPath(GeneralPath.WIND_EVEN_ODD, 3);
 		

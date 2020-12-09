@@ -100,8 +100,8 @@ public class Planet
 				bg[i][j].draw(g);
 			}
 		}
-		//g.setColor(color);
-		//g.fillOval((int)x, (int)y, (int)radius, (int)radius);
+		g.setColor(color);
+		g.fillOval((int)x, (int)y, (int)radius, (int)radius);
 	}
 
 }

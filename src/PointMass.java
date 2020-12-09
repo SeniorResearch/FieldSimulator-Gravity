@@ -17,6 +17,14 @@ public class PointMass
 	Color color = Color.black;
 	private final double G = 0.00000000006673;
 	
+	 int[] xPoints;
+	 int[] yPoints;
+	 
+	 int nPoints;
+	 int maxPoints = 10000;
+	 
+	 boolean traceOn;
+	
 	public PointMass()
 	{
 		xPrv = 0;
@@ -37,6 +45,8 @@ public class PointMass
 	
 	public PointMass(float xPos, float yPos, float xV, float yV, float xA, float yA, float radius, int mass)
 	{
+		xPoints = new int[maxPoints];
+		yPoints = new int[maxPoints];
 		this.xPrv = 0;
 		this.yPrv = 0;
 		this.xPos = xPos;
@@ -50,6 +60,8 @@ public class PointMass
 		
 		this.radius = radius;
 		this.mass = mass;
+		
+		traceOn = false;
 	}
 	
 	public void move()
@@ -69,14 +81,12 @@ public class PointMass
 		xPos = xPos + (xV*t) + ((xA*t)*t)/2;
 		yPos = yPos + (yV*t) + ((yA*t)*t)/2;
 		
-		//System.out.println("xPos: " + xPos + " xPrv: " + xPrv + " yPos: " + yPos + " yPrv: " + yPrv);
 		xV = xV + (xA*t);
 		yV = yV + (yA*t);
 		
-		//System.out.println("xPos: " + xPos + " yPos: " + yPos);
-		//System.out.println("xV: " + xV + " yV: " + yV);
-		
-		
+		xPoints[nPoints] = (int)xPos;
+		yPoints[nPoints] = (int)yPos;
+		nPoints += 1;
 		checkPosition(); 
 	}
 	
@@ -84,16 +94,10 @@ public class PointMass
 	{
 		xPrv = xPos;
 		yPrv = yPos;
-		//xPos = xPos + (xV*t) + ((xA*t)*t)/2;
-		//yPos = yPos + (yV*t) + ((yA*t)*t)/2;
-		
-		//System.out.println("xPos: " + xPos + " xPrv: " + xPrv + " yPos: " + yPos + " yPrv: " + yPrv);
-		//xV = xV + (xA*t);
-		//yV = yV + (yA*t);
 		double theta = Math.atan(yPos/xPos);
 		
-		xA = (float) ((1000) / ((500-xPos)*(500-xPos)+(500-yPos)*(500-yPos)));
-		yA = (float) ((1000) / ((500-xPos)*(500-xPos)+(500-yPos)*(500-yPos)));
+		xA = (float) (((1000) / ((500-xPos)*(500-xPos)+(500-yPos)*(500-yPos)))*Math.cos(theta));
+		yA = (float) (((1000) / ((500-xPos)*(500-xPos)+(500-yPos)*(500-yPos)))*Math.sin(theta));
 		
 		xA *= Math.cos(theta);
 		yA *= Math.sin(theta);
@@ -104,16 +108,20 @@ public class PointMass
 		xPos = xPos + (xV*t) + ((xA*t)*t)/2;
 		yPos = yPos + (yV*t) + ((yA*t)*t)/2;
 		
-		
-		//System.out.println("xPos: " + xPos + " yPos: " + yPos);
-		//System.out.println("xV: " + xV + " yV: " + yV);
-		
+		xPoints[nPoints] = (int)xPos;
+		yPoints[nPoints] = (int)yPos;
+		nPoints += 1;
 		
 		checkPosition(); 
 	}
 	public int getMass()
 	{
 		return mass;
+	}
+	
+	public void setTraceOn(boolean traceOn)
+	{
+		this.traceOn = traceOn;
 	}
 	
 	public void setColor(Color color)
@@ -147,6 +155,11 @@ public class PointMass
 			//yA *= -1;
 			yPos = 0;
 		}
+		
+		if(nPoints == maxPoints)
+		{
+			nPoints = 0;
+		}
 	}
 	
 	public void draw(Graphics g)
@@ -154,7 +167,10 @@ public class PointMass
 		g.setColor(color);
 		g.fillOval((int)xPos, (int)yPos, (int)radius, (int)radius);
 		
-		//g.setColor(Color.black);
-		//g.drawLine((int)(xPos+25), (int)( yPos+25), (int)(xPrv+25), (int)(yPrv+25));
+		if(traceOn)
+		{
+			g.drawPolyline(xPoints, yPoints, nPoints);
+		}
+
 	}
 }
